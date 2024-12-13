@@ -8,7 +8,7 @@ const Header = () => {
       <Link href="https://uibun.dev" className="group">
         <h1 className="text-2xl font-bold">My Kanban</h1>
         <p>
-          A personal kanban board from{' '}
+          A free kanban board from{' '}
           <span className="font-semibold group-hover:underline">UiBun</span>
         </p>
       </Link>
