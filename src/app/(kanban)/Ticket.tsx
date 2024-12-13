@@ -1,9 +1,11 @@
-import { cn } from '@/lib/utils';
-import { useKanbanStore } from './store/';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button } from '@/components/ui/button';
 import { Trash, X } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+
+import { useKanbanStore } from './store/';
 import { useDeleteTicketStore } from './store/useDeleteTicketStore';
 
 type TicketProps = {
@@ -45,15 +47,15 @@ const Ticket = ({
         }}
         variant="ghost"
         className={cn('absolute right-0 top-0 p-2', {
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90':
+          'bg-destructive text-destructive-foreground dark:hover:bg-destructive':
             ticketToDelete === id,
         })}
         title="Double click to delete"
       >
         {ticketToDelete === id ? (
-          <Trash className="w-1" />
+          <Trash className="w-4" />
         ) : (
-          <X className="w-1" />
+          <X className="w-4" />
         )}
       </Button>
       <span

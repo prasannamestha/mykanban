@@ -1,7 +1,7 @@
 import { produce } from 'immer';
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 export type Column = {
   id: string;
@@ -81,6 +81,7 @@ export type KanbanStore = {
   columns: Column[];
   setColumns: (cols: KanbanStore['columns']) => void;
   addNewColumn: (name: string) => void;
+  renameColumn: (id: Column['id'], newName: Column['name']) => void;
   deleteColumn: (id: Column['id']) => void;
   addTicket: (columnId: string, ticket: Omit<Ticket, 'id'>) => void;
   moveTicket: (
@@ -115,6 +116,18 @@ export const useKanbanStore = create(
           }),
         }));
       },
+
+      renameColumn: (id, name) =>
+        set((state) => ({
+          columns: produce(state.columns, (draft) => {
+            const columnIndex = draft.findIndex((c) => c.id === id);
+            if (columnIndex < 0) return;
+
+            // Column found - rename
+            draft[columnIndex].name = name;
+          }),
+        })),
+
       deleteColumn: (id) => {
         return set((state) => ({
           columns: produce(state.columns, (draft) => {

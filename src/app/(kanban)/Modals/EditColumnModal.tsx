@@ -1,3 +1,7 @@
+import { FormEvent } from 'react';
+import { Trash } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -6,21 +10,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useKanbanStore, useModalStore } from '../store';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
 import { Label } from '@/components/ui/label';
-import { Trash } from 'lucide-react';
+
 import { ConfirmationBtn } from '../ConfirmationBtn';
+import { useKanbanStore, useModalStore } from '../store';
 
 export const EDIT_COLUMN_MODAL = 'edit-column-modal';
 
 export const EditColumnModal = () => {
   const { activeModalId, reset, metadata } = useModalStore();
-  const { findColumnById, deleteColumn } = useKanbanStore();
+  const { findColumnById, deleteColumn, renameColumn } = useKanbanStore();
 
-  const handleSave = () => {};
+  const handleSave = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!metadata?.columnId) return;
+
+    const formData = new FormData(e.currentTarget);
+    const newName = formData.get('column-name') as string;
+
+    renameColumn(metadata.columnId, newName);
+    reset();
+  };
   return (
     <Dialog open={activeModalId === EDIT_COLUMN_MODAL} onOpenChange={reset}>
       <DialogContent>
@@ -32,12 +43,13 @@ export const EditColumnModal = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col gap-4 py-8 w-full">
+          <div className="flex w-full flex-col gap-4 py-8">
             <div className="grid w-full max-w-sm items-center gap-1.5">
               <Label htmlFor="column-name">Column name</Label>
               <Input
                 type="text"
                 id="column-name"
+                name="column-name"
                 placeholder="Enter column name here"
                 required
                 defaultValue={findColumnById(metadata?.columnId || '')?.name}
@@ -46,9 +58,9 @@ export const EditColumnModal = () => {
           </div>
 
           <DialogFooter>
-            <div className="flex justify-between w-full">
+            <div className="flex w-full justify-between">
               <ConfirmationBtn
-                defaultText={<Trash />}
+                defaultText={<Trash className="w-4" />}
                 confirmationText="Click again to delete this column"
                 variant="destructive"
                 onConfirm={() => {

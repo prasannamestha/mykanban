@@ -1,3 +1,6 @@
+import { FormEvent } from "react"
+
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -5,56 +8,54 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useKanbanStore, useModalStore } from '../store';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 
-import { Textarea } from '@/components/ui/textarea';
-import { FormEvent } from 'react';
+import { useKanbanStore, useModalStore } from "../store"
 
 export const NewTicketModal = () => {
-  const { activeModalId, reset, metadata } = useModalStore();
-  const { findColumnById, addTicket } = useKanbanStore();
+  const { activeModalId, reset, metadata } = useModalStore()
+  const { findColumnById, addTicket } = useKanbanStore()
 
   const handleSave = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
 
-    const title = formData.get('title') as string;
-    const description = formData.get('description') as string;
-    const category = formData.get('category') as string;
+    const title = formData.get("title") as string
+    const description = formData.get("description") as string
+    const category = formData.get("category") as string
 
-    addTicket(metadata?.columnId || '', {
+    addTicket(metadata?.columnId || "", {
       title,
       category,
-      description: description || '',
-    });
-    reset();
-  };
+      description: description || "",
+    })
+    reset()
+  }
 
   return (
-    <Dialog open={activeModalId === 'create-new-ticket'} onOpenChange={reset}>
+    <Dialog open={activeModalId === "create-new-ticket"} onOpenChange={reset}>
       <DialogContent>
         <form onSubmit={handleSave}>
           <DialogHeader>
             <DialogTitle>Create new ticket</DialogTitle>
             <DialogDescription>
-              You are creating a new ticket under{' '}
+              You are creating a new ticket under{" "}
               <span className="font-semibold">
-                &quot;{findColumnById(metadata?.columnId || '')?.name}&quot;
+                &quot;{findColumnById(metadata?.columnId || "")?.name}&quot;
               </span>
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col gap-4 py-4 w-full">
+          <div className="flex w-full flex-col gap-4 py-4">
             <Input
               name="title"
               className="col-span-3"
@@ -64,7 +65,7 @@ export const NewTicketModal = () => {
 
             <Textarea
               name="description"
-              className="resize-none w-full box-border"
+              className="box-border w-full resize-none"
               placeholder="Ticket description"
               rows={4}
             />
@@ -86,5 +87,5 @@ export const NewTicketModal = () => {
         </form>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
