@@ -1,13 +1,18 @@
 import { create } from 'zustand';
+import { EDIT_COLUMN_MODAL } from '../Modals/EditColumnModal';
+import { NEW_COLUMN_MODAL } from '../Modals/NewColumnModal';
 
-type SupportedModalIds = 'create-new-ticket' | 'edit-column-modal';
+type SupportedModalIds =
+  | 'create-new-ticket'
+  | typeof EDIT_COLUMN_MODAL
+  | typeof NEW_COLUMN_MODAL;
 type ModalStore = {
   activeModalId?: SupportedModalIds;
   metadata?: Record<string, string>;
 
   openModal: (
     modalId: ModalStore['activeModalId'],
-    metadata: ModalStore['metadata']
+    metadata?: ModalStore['metadata']
   ) => void;
   reset: () => void;
 };

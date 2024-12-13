@@ -2,20 +2,28 @@
 
 import { useState } from 'react';
 import {
+  CollisionDetection,
   DndContext,
+  DragEndEvent,
+  DragOverEvent,
   DragOverlay,
+  DragStartEvent,
   pointerWithin,
   rectIntersection,
 } from '@dnd-kit/core';
-import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
-import { Ticket as TicketType, useKanbanStore } from './store/';
+import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
+import { Plus } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+
+import { NEW_COLUMN_MODAL } from './Modals/NewColumnModal';
+import { Ticket as TicketType, useKanbanStore, useModalStore } from './store/';
 import { SwimLane } from './Swimlane';
 import { Ticket } from './Ticket';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 
 const KanbanBoard = () => {
   const { columns, moveTicket } = useKanbanStore();
+  const { openModal } = useModalStore();
   const [activeTicket, setActiveTicket] = useState<TicketType>();
 
   const findColumnId = (ticketOrColumnId: string) => {
@@ -27,8 +35,8 @@ const KanbanBoard = () => {
     )?.id;
   };
 
-  const handleDragStart = ({ active }) => {
-    const columnId = findColumnId(active.id);
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    const columnId = findColumnId(active.id as string);
     const ticket = columns
       .find((col) => col.id === columnId)
       ?.tickets.find((t) => t.id === active.id);
@@ -36,15 +44,16 @@ const KanbanBoard = () => {
     setActiveTicket(ticket);
   };
 
-  const handleDragOver = ({ active, over }) => {
+  const handleDragOver = ({ active, over }: DragOverEvent) => {
     if (!over) return;
+    const activeId = active.id as string;
 
-    const activeColumnId = findColumnId(active.id);
-    const overColumnId = findColumnId(over.id);
+    const activeColumnId = findColumnId(activeId);
+    const overColumnId = findColumnId(over.id as string);
 
     if (activeColumnId && overColumnId && activeColumnId !== overColumnId) {
       moveTicket(
-        active.id,
+        activeId,
         activeColumnId,
         overColumnId,
         columns.find((col) => col.id === overColumnId)?.tickets.length || 0
@@ -52,14 +61,16 @@ const KanbanBoard = () => {
     }
   };
 
-  const handleDragEnd = ({ active, over }) => {
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over) {
-      setActiveTicket(null);
+      setActiveTicket(undefined);
       return;
     }
 
-    const activeColumnId = findColumnId(active.id);
-    const overColumnId = findColumnId(over.id);
+    const activeId = active.id as string;
+
+    const activeColumnId = findColumnId(activeId);
+    const overColumnId = findColumnId(over.id as string);
 
     if (activeColumnId && overColumnId) {
       const targetColumn = columns.find((col) => col.id === overColumnId);
@@ -68,13 +79,13 @@ const KanbanBoard = () => {
       const overIndex = targetTickets.findIndex((t) => t.id === over.id);
       const targetIndex = overIndex === -1 ? targetTickets.length : overIndex; // Insert at the end if no exact match
 
-      moveTicket(active.id, activeColumnId, overColumnId, targetIndex);
+      moveTicket(activeId, activeColumnId, overColumnId, targetIndex);
     }
 
     setActiveTicket(undefined);
   };
 
-  function customCollisionDetectionAlgorithm(args) {
+  const customCollisionDetectionAlgorithm: CollisionDetection = (args) => {
     // First, let's see if there are any collisions with the pointer
     const pointerCollisions = pointerWithin(args);
 
@@ -85,7 +96,7 @@ const KanbanBoard = () => {
 
     // If there are no collisions with the pointer, return rectangle intersections
     return rectIntersection(args);
-  }
+  };
 
   return (
     <DndContext
@@ -99,7 +110,7 @@ const KanbanBoard = () => {
         items={columns.flatMap((col) => col.tickets.map((t) => t.id))}
         strategy={rectSortingStrategy}
       >
-        <div className="flex flex-col overflow-auto min-h-screen">
+        <div className="flex min-h-screen flex-col overflow-auto">
           <div className="mt-4 flex grow space-x-6 overflow-auto">
             {columns.map((col) => (
               <SwimLane
@@ -109,9 +120,12 @@ const KanbanBoard = () => {
                 tickets={col.tickets}
               />
             ))}
-            <div className="pl-16 shrink-0 flex justify-end border-l border-zinc-900">
-              <Button variant="outline">
-                Add column <Plus />
+            <div className="shrink-0 border-l border-zinc-900  pl-16 pr-4">
+              <Button
+                variant="outline"
+                onClick={() => openModal(NEW_COLUMN_MODAL)}
+              >
+                Add column <Plus className="ml-1 w-4" />
               </Button>
             </div>
           </div>

@@ -18,12 +18,13 @@ import {
 } from '@/components/ui/select';
 
 import { Textarea } from '@/components/ui/textarea';
+import { FormEvent } from 'react';
 
 export const NewTicketModal = () => {
   const { activeModalId, reset, metadata } = useModalStore();
   const { findColumnById, addTicket } = useKanbanStore();
 
-  const handleSave = (e) => {
+  const handleSave = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
@@ -31,7 +32,7 @@ export const NewTicketModal = () => {
     const description = formData.get('description') as string;
     const category = formData.get('category') as string;
 
-    addTicket(metadata.columnId, {
+    addTicket(metadata?.columnId || '', {
       title,
       category,
       description: description || '',
@@ -48,7 +49,7 @@ export const NewTicketModal = () => {
             <DialogDescription>
               You are creating a new ticket under{' '}
               <span className="font-semibold">
-                &quot;{findColumnById(metadata?.columnId)?.name}&quot;
+                &quot;{findColumnById(metadata?.columnId || '')?.name}&quot;
               </span>
             </DialogDescription>
           </DialogHeader>

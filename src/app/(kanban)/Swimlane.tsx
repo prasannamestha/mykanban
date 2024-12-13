@@ -4,10 +4,11 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { Ticket as TicketType, useKanbanStore, useModalStore } from './store/';
+import { Ticket as TicketType, useModalStore } from './store/';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Plus } from 'lucide-react';
+import { EDIT_COLUMN_MODAL } from './Modals/EditColumnModal';
 
 type SwimLaneProps = {
   title: string;
@@ -33,11 +34,11 @@ const SwimLane = ({ title, id, tickets }: SwimLaneProps) => {
       ref={setNodeRef}
     >
       <div className="flex justify-between h-10 items-center">
-        <div className="flex items-center shrink-0 flex-1">
+        <div className="flex items-center shrink-0 flex-1 sticky top-0">
           <Button
             variant="ghost"
             className="block text-sm !font-semibold text-white"
-            // onClick={() => deleteColumn(id)}
+            onClick={() => openModal(EDIT_COLUMN_MODAL, { columnId: id })}
           >
             {title} {tickets.length ? `(${tickets.length})` : null}
           </Button>

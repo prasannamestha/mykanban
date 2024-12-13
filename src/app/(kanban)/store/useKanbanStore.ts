@@ -23,22 +23,37 @@ const defaultColumns: Column[] = [
     tickets: [
       {
         id: 'default-backlog-task-1',
-        title: 'Backlog task 1',
-        category: 'Engineering',
-        description: '',
+        title: 'Move this ticket around',
+        category: 'Design',
+        description:
+          'You can drag & drop this ticket in any columns here. Try it!',
       },
       {
         id: 'default-backlog-task-2',
-        title: 'Backlog task 2',
-        category: 'Design',
-        description: '',
+        title: 'Add new ticket',
+        category: 'Engineering',
+        description:
+          'You can click on the + icon (near the column heading) above to add a new ticket in that column.',
+      },
+      {
+        id: 'default-backlog-task-3',
+        title: 'Add new column',
+        category: 'Engineering',
+        description: 'Scroll right to reveal a button to add new column.',
       },
     ],
   },
   {
     id: 'in-progress',
     name: 'In Progress',
-    tickets: [],
+    tickets: [
+      {
+        id: 'default-in-progress-task-1',
+        title: 'Start using MyKanban',
+        category: 'Engineering',
+        description: 'Use MyKanban for managing my daily work & projects',
+      },
+    ],
   },
   {
     id: 'in-review',
@@ -48,12 +63,23 @@ const defaultColumns: Column[] = [
   {
     id: 'done',
     name: 'Done',
-    tickets: [],
+    tickets: [
+      {
+        id: 'done-task-1',
+        title: 'Data is stored on this machine only',
+        description:
+          'MyKanban uses LocalStorage - so all this data is only available to you on this machine. Let us know if you need cloud-sync by writing to prasanna@uibun.dev',
+        category: 'Engineering',
+      },
+    ],
   },
 ];
 
 export type KanbanStore = {
+  status: 'loading' | 'ready';
+  setStatus: (status: KanbanStore['status']) => void;
   columns: Column[];
+  setColumns: (cols: KanbanStore['columns']) => void;
   addNewColumn: (name: string) => void;
   deleteColumn: (id: Column['id']) => void;
   addTicket: (columnId: string, ticket: Omit<Ticket, 'id'>) => void;
@@ -71,7 +97,11 @@ export type KanbanStore = {
 export const useKanbanStore = create(
   persist<KanbanStore>(
     (set, get) => ({
+      status: 'loading',
       columns: [],
+
+      setStatus: (status) => set({ status }),
+      setColumns: (cols) => set({ columns: cols }),
 
       addNewColumn: (name) => {
         return set((state) => ({
@@ -89,6 +119,9 @@ export const useKanbanStore = create(
         return set((state) => ({
           columns: produce(state.columns, (draft) => {
             const columnIndex = draft.findIndex((c) => c.id === id);
+            if (columnIndex < 0) return;
+
+            // Column found - delete
             draft.splice(columnIndex, 1);
           }),
         }));
@@ -162,6 +195,16 @@ export const useKanbanStore = create(
     {
       name: 'my-kanban-store-v0.1',
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => {
+        return (state) => {
+          if (state) {
+            state.setStatus('ready');
+            if (state.columns.length === 0) {
+              state.setColumns(defaultColumns);
+            }
+          }
+        };
+      },
     }
   )
 );
