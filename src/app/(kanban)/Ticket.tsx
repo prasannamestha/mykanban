@@ -1,12 +1,12 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Trash, X } from 'lucide-react';
+import { Edit } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-import { useKanbanStore } from './store/';
-import { useDeleteTicketStore } from './store/useDeleteTicketStore';
+import { useKanbanStore, useModalStore } from './store/';
+import { EDIT_TICKET_MODAL_ID } from './Modals/EditTicketModal';
 
 type TicketProps = {
   id: string;
@@ -23,40 +23,25 @@ const Ticket = ({
   description,
   dragOverlay = false,
 }: TicketProps) => {
-  const { removeTicket } = useKanbanStore();
-  const { ticketToDelete, setTicketToDelete } = useDeleteTicketStore();
+  const { openModal } = useModalStore();
 
   return (
     <div
       className={cn(
-        'relative mt-3 flex flex-col items-start rounded-lg border border-zinc-700 bg-zinc-900 p-4 text-neutral-400',
+        'relative mt-3 flex flex-col items-start rounded-lg border border-zinc-700 bg-zinc-900 p-4 text-neutral-400 group/ticket',
         dragOverlay ? 'z-50 opacity-50' : ''
       )}
     >
       <Button
         onPointerDown={(e) => e.stopPropagation()}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (ticketToDelete === id) {
-            removeTicket(id);
-            setTicketToDelete('');
-            return;
-          }
-          setTicketToDelete(id);
+        onClick={() => {
+          openModal(EDIT_TICKET_MODAL_ID, { ticketId: id });
         }}
         variant="ghost"
-        className={cn('absolute right-0 top-0 p-2', {
-          'bg-destructive text-destructive-foreground dark:hover:bg-destructive':
-            ticketToDelete === id,
-        })}
+        className="absolute right-0 top-0 p-2 opacity-0 group-hover/ticket:opacity-100 transition-opacity ease-in-out duration-300"
         title="Double click to delete"
       >
-        {ticketToDelete === id ? (
-          <Trash className="w-4" />
-        ) : (
-          <X className="w-4" />
-        )}
+        <Edit className="w-2" />
       </Button>
       <span
         className={cn(

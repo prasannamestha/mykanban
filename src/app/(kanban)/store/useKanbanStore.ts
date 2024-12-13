@@ -84,6 +84,7 @@ export type KanbanStore = {
   renameColumn: (id: Column['id'], newName: Column['name']) => void;
   deleteColumn: (id: Column['id']) => void;
   addTicket: (columnId: string, ticket: Omit<Ticket, 'id'>) => void;
+  updateTicket: (ticketId: Ticket['id'], ticket: Ticket) => void;
   moveTicket: (
     ticketId: string,
     sourceColumnId: string,
@@ -149,6 +150,20 @@ export const useKanbanStore = create(
                 id: uuidv4(),
                 ...ticket,
               });
+            }
+          }),
+        })),
+      updateTicket: (ticketId, ticket) =>
+        set((state) => ({
+          columns: produce(state.columns, (draft) => {
+            for (let i = 0; i < draft.length; i++) {
+              for (let j = 0; j < draft[i].tickets.length; j++) {
+                if (draft[i].tickets[j].id === ticketId) {
+                  // update
+                  draft[i].tickets[j] = ticket;
+                  break;
+                }
+              }
             }
           }),
         })),

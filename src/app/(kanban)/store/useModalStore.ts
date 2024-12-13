@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 import { EDIT_COLUMN_MODAL } from '../Modals/EditColumnModal';
 import { NEW_COLUMN_MODAL } from '../Modals/NewColumnModal';
+import { EDIT_TICKET_MODAL_ID } from '../Modals/EditTicketModal';
 
 type SupportedModalIds =
   | 'create-new-ticket'
+  | typeof EDIT_TICKET_MODAL_ID
   | typeof EDIT_COLUMN_MODAL
   | typeof NEW_COLUMN_MODAL;
 type ModalStore = {
