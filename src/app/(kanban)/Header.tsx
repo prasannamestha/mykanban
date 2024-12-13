@@ -11,7 +11,7 @@ const Header = () => {
           A personal kanban board from{' '}
           <Link
             className="font-semibold group-hover:underline"
-            href="uibun.dev"
+            href="https://uibun.dev"
           >
             UiBun
           </Link>
