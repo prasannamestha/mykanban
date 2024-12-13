@@ -5,18 +5,13 @@ import { buttonVariants } from '@/components/ui/button';
 const Header = () => {
   return (
     <div className="flex items-center justify-between border-b border-gray-700 pb-4 pt-8">
-      <div className="group">
+      <Link href="https://uibun.dev" className="group">
         <h1 className="text-2xl font-bold">My Kanban</h1>
         <p>
           A personal kanban board from{' '}
-          <Link
-            className="font-semibold group-hover:underline"
-            href="https://uibun.dev"
-          >
-            UiBun
-          </Link>
+          <span className="font-semibold group-hover:underline">UiBun</span>
         </p>
-      </div>
+      </Link>
       <div>
         <Link
           href="https://uibun.dev"
