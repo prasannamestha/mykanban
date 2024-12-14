@@ -15,13 +15,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Kanban by UiBun',
+  title: 'MyKanban by UiBun',
   description:
     'Beautiful & free Kanban board for makers, indiehackers. Best open-source kanban board on the internet.',
   keywords:
     'best kanban board, kanban board, free kanban, free kanban board, free trello alternative, kanban system, free kanban system, beautiful kanban, task management, simple task management software',
   alternates: {
     canonical: 'https://uibun.dev/kanban',
+  },
+  openGraph: {
+    title: 'MyKanban by UiBun',
+    description: 'Beautiful & free Kanban board for personal use.',
+    images: ['/og.png'],
   },
 };
 
