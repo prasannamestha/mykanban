@@ -48,7 +48,7 @@ const SwimLane = ({ title, id, tickets }: SwimLaneProps) => {
             
           </span> */}
         </div>
-        <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="md:opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <Button
             variant="outline"
             onClick={() => openModal('create-new-ticket', { columnId: id })}

@@ -29,25 +29,32 @@ const Ticket = ({
   return (
     <div
       className={cn(
-        'relative mt-3 flex flex-col items-start rounded-lg border border-zinc-700 bg-zinc-900 p-4 text-neutral-400 group/ticket touch-manipulation',
+        'relative mt-3 flex flex-col items-start rounded-lg border border-zinc-700 bg-zinc-900 p-4 text-neutral-400 touch-manipulation',
         dragOverlay ? 'z-50 opacity-50' : ''
       )}
     >
       <div className="absolute right-0 top-0 group/ticket-actions flex">
         <Button
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={() => {
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
             removeTicket(id);
           }}
           variant="ghost"
-          className="opacity-0 group-hover/ticket-actions:opacity-100 transition-all ease duration-300 hover:bg-destructive/80"
+          className="opacity-0 group-hover/ticket:opacity-100 group-hover/ticket-actions:opacity-100 transition-all ease duration-300 hover:bg-destructive/80"
           aria-label="Edit ticket"
           size="icon"
         >
           <Trash className="w-2" />
         </Button>
         <Button
-          onPointerDown={(e) => e.stopPropagation()}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
           onClick={() => {
             openModal(EDIT_TICKET_MODAL_ID, { ticketId: id });
           }}
@@ -100,7 +107,13 @@ const SortableTicket = ({ id }: SortableTicketProps) => {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className="group/ticket"
+    >
       <Ticket
         id={id}
         title={title}
