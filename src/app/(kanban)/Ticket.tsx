@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Edit } from 'lucide-react';
+import { Edit, Trash } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -24,6 +24,7 @@ const Ticket = ({
   dragOverlay = false,
 }: TicketProps) => {
   const { openModal } = useModalStore();
+  const { removeTicket } = useKanbanStore();
 
   return (
     <div
@@ -32,17 +33,32 @@ const Ticket = ({
         dragOverlay ? 'z-50 opacity-50' : ''
       )}
     >
-      <Button
-        onPointerDown={(e) => e.stopPropagation()}
-        onClick={() => {
-          openModal(EDIT_TICKET_MODAL_ID, { ticketId: id });
-        }}
-        variant="ghost"
-        className="absolute right-0 top-0 p-2 opacity-0 group-hover/ticket:opacity-100 transition-opacity ease-in-out duration-300"
-        title="Double click to delete"
-      >
-        <Edit className="w-2" />
-      </Button>
+      <div className="absolute right-0 top-0 group/ticket-actions flex">
+        <Button
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => {
+            removeTicket(id);
+          }}
+          variant="ghost"
+          className="opacity-0 group-hover/ticket-actions:opacity-100 transition-all ease duration-300 hover:bg-destructive/80"
+          aria-label="Edit ticket"
+          size="icon"
+        >
+          <Trash className="w-2" />
+        </Button>
+        <Button
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => {
+            openModal(EDIT_TICKET_MODAL_ID, { ticketId: id });
+          }}
+          variant="ghost"
+          className="opacity-0 group-hover/ticket:opacity-100 transition-opacity ease-in-out duration-300"
+          aria-label="Edit ticket"
+          size="icon"
+        >
+          <Edit className="w-2" />
+        </Button>
+      </div>
       <span
         className={cn(
           'flex h-6 items-center rounded-full px-3 text-xs font-semibold text-white',
