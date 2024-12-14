@@ -1,12 +1,19 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Edit, Trash } from 'lucide-react';
+import { Edit, Trash, X } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { useKanbanStore, useModalStore } from './store/';
 import { EDIT_TICKET_MODAL_ID } from './Modals/EditTicketModal';
+import { useState } from 'react';
 
 type TicketProps = {
   id: string;
@@ -25,6 +32,7 @@ const Ticket = ({
 }: TicketProps) => {
   const { openModal } = useModalStore();
   const { removeTicket } = useKanbanStore();
+  const [deleteClickCount, setDeleteClickCount] = useState(0);
 
   return (
     <div
@@ -34,22 +42,43 @@ const Ticket = ({
       )}
     >
       <div className="absolute right-0 top-0 group/ticket-actions flex">
-        <Button
-          onPointerDown={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            removeTicket(id);
-          }}
-          variant="ghost"
-          className="opacity-0 group-hover/ticket:opacity-100 group-hover/ticket-actions:opacity-100 transition-all ease duration-300 hover:bg-destructive/80"
-          aria-label="Edit ticket"
-          size="icon"
-        >
-          <Trash className="w-2" />
-        </Button>
+        <TooltipProvider>
+          <Tooltip open={deleteClickCount > 0}>
+            <TooltipTrigger asChild>
+              <Button
+                onMouseLeave={() => {
+                  setDeleteClickCount(0);
+                }}
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (deleteClickCount > 0) {
+                    removeTicket(id);
+                    return;
+                  }
+                  setDeleteClickCount((c) => c + 1);
+                }}
+                variant="ghost"
+                className="opacity-0 group-hover/ticket:opacity-100 group-hover/ticket-actions:opacity-100 transition-all ease duration-300 hover:bg-destructive/80"
+                aria-label="Edit ticket"
+                size="icon"
+              >
+                {deleteClickCount > 0 ? (
+                  <Trash className="w-2" />
+                ) : (
+                  <X className="w-2" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="bg-background text-foreground">
+              <p>Click again to delete</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <Button
           onPointerDown={(e) => {
             e.stopPropagation();
