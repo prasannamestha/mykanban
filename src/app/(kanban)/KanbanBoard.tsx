@@ -8,8 +8,13 @@ import {
   DragOverEvent,
   DragOverlay,
   DragStartEvent,
+  KeyboardSensor,
+  MouseSensor,
   pointerWithin,
   rectIntersection,
+  TouchSensor,
+  useSensor,
+  useSensors,
 } from '@dnd-kit/core';
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { Plus } from 'lucide-react';
@@ -25,6 +30,12 @@ const KanbanBoard = () => {
   const { columns, moveTicket } = useKanbanStore();
   const { openModal } = useModalStore();
   const [activeTicket, setActiveTicket] = useState<TicketType>();
+
+  const sensors = useSensors(
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor)
+  );
 
   const findColumnId = (ticketOrColumnId: string) => {
     const foundColumn = columns.find((c) => c.id === ticketOrColumnId);
@@ -99,49 +110,52 @@ const KanbanBoard = () => {
   };
 
   return (
-    <DndContext
-      collisionDetection={customCollisionDetectionAlgorithm}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-    >
-      {/* SortableContext for cross-column sorting */}
-      <SortableContext
-        items={columns.flatMap((col) => col.tickets.map((t) => t.id))}
-        strategy={rectSortingStrategy}
+    <div className="w-screen md:max-w-7xl md:mx-auto md:px-6 overflow-visible">
+      <DndContext
+        collisionDetection={customCollisionDetectionAlgorithm}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
       >
-        <div className="flex min-h-screen flex-col overflow-auto">
-          <div className="mt-4 flex grow space-x-6 overflow-auto">
-            {columns.map((col) => (
-              <SwimLane
-                key={col.id}
-                id={col.id}
-                title={col.name}
-                tickets={col.tickets}
-              />
-            ))}
-            <div className="shrink-0 border-l border-zinc-900  pl-16 pr-4">
-              <Button
-                variant="outline"
-                onClick={() => openModal(NEW_COLUMN_MODAL)}
-              >
-                Add column <Plus className="ml-1 w-4" />
-              </Button>
+        {/* SortableContext for cross-column sorting */}
+        <SortableContext
+          items={columns.flatMap((col) => col.tickets.map((t) => t.id))}
+          strategy={rectSortingStrategy}
+        >
+          <div className="flex min-h-screen flex-col overflow-auto">
+            <div className="pl-6 md:pl-0 mt-4 flex grow space-x-6 overflow-auto">
+              {columns.map((col) => (
+                <SwimLane
+                  key={col.id}
+                  id={col.id}
+                  title={col.name}
+                  tickets={col.tickets}
+                />
+              ))}
+              <div className="shrink-0 border-l border-zinc-900  pl-16 pr-4">
+                <Button
+                  variant="outline"
+                  onClick={() => openModal(NEW_COLUMN_MODAL)}
+                >
+                  Add column <Plus className="ml-1 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </SortableContext>
-      <DragOverlay>
-        {activeTicket ? (
-          <Ticket
-            id={activeTicket.id}
-            title={activeTicket.title}
-            category={activeTicket.category}
-            description={activeTicket.description}
-          />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+        </SortableContext>
+        <DragOverlay>
+          {activeTicket ? (
+            <Ticket
+              id={activeTicket.id}
+              title={activeTicket.title}
+              category={activeTicket.category}
+              description={activeTicket.description}
+            />
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+    </div>
   );
 };
 

@@ -12,10 +12,9 @@ export default function Home() {
   return (
     <div className="">
       <PromoBanner />
-      <div className=" w-screen max-w-7xl mx-auto px-6 overflow-visible">
-        <Header />
-        <KanbanBoard />
-      </div>
+
+      <Header />
+      <KanbanBoard />
 
       <NewTicketModal />
       <EditTicketModal />
