@@ -29,7 +29,7 @@ const Ticket = ({
   return (
     <div
       className={cn(
-        'relative mt-3 flex flex-col items-start rounded-lg border border-zinc-700 bg-zinc-900 p-4 text-neutral-400 group/ticket',
+        'relative mt-3 flex flex-col items-start rounded-lg border border-zinc-700 bg-zinc-900 p-4 text-neutral-400 group/ticket touch-manipulation',
         dragOverlay ? 'z-50 opacity-50' : ''
       )}
     >

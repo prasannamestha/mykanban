@@ -33,7 +33,12 @@ const KanbanBoard = () => {
 
   const sensors = useSensors(
     useSensor(MouseSensor),
-    useSensor(TouchSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 300,
+        tolerance: 0,
+      },
+    }),
     useSensor(KeyboardSensor)
   );
 
