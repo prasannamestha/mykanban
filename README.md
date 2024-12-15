@@ -1,6 +1,6 @@
 # MyKanban
 
-Beautiful & open-source free personal kanban from the [UiBun](https://uibun.dev) team
+Beautiful & open-source free personal kanban from the [UiBun](https://uibun.dev) team. All data is stored in the browser - no login required.
 
 <img width="1298" alt="image" src="https://github.com/user-attachments/assets/384b9fda-baed-4810-a75c-145180c1fdfe" />
 
