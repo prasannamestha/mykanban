@@ -62,7 +62,12 @@ const Ticket = ({
                   setDeleteClickCount((c) => c + 1);
                 }}
                 variant="ghost"
-                className="opacity-0 group-hover/ticket:opacity-100 group-hover/ticket-actions:opacity-100 transition-all ease duration-300 hover:bg-destructive/80"
+                className={cn(
+                  'opacity-0 group-hover/ticket:opacity-100 group-hover/ticket-actions:opacity-100 transition-all ease duration-300',
+                  {
+                    '!bg-destructive': deleteClickCount > 0,
+                  }
+                )}
                 aria-label="Edit ticket"
                 size="icon"
               >
