@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MyKanban by UiBun',
+  title:
+    'MyKanban by UiBun - free and open-source kanban board for personal use',
   description:
     'Beautiful & free Kanban board for makers, indiehackers. Best open-source kanban board on the internet.',
   keywords:
