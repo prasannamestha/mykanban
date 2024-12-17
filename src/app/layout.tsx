@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   keywords:
     'best kanban board, kanban board, free kanban, free kanban board, free trello alternative, kanban system, free kanban system, beautiful kanban, task management, simple task management software',
   alternates: {
-    canonical: 'https://uibun.dev/kanban',
+    canonical: 'https://www.uibun.dev/kanban',
   },
   openGraph: {
     title: 'MyKanban by UiBun',

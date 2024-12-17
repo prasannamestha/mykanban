@@ -41,7 +41,7 @@ export const PromoBanner = () => {
   return (
     <div className="relative z-50 w-full border-b border-zinc-700 bg-zinc-900 px-4 py-2 hidden md:block">
       <p className="text-center text-sm text-neutral-300">
-        <Link className="underline" href="https://uibun.dev">
+        <Link className="underline" href="https://www.uibun.dev">
           UiBun
         </Link>{' '}
         is a drag & drop tailwind website builder,{' '}
